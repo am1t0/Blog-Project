@@ -19,8 +19,8 @@ export default function Blog({ data }) {
                         <i className="fa-solid fa-trash"></i>
                     </span>
                     <div className="d-flex justify-content-between">
-                        <p>{data.author}</p>
-                        <p>{data.date}</p>
+                        <p>{data.author?data.author:'AmitJi'}</p>
+                        <p>{data.date?data.date:'25/12/2004'}</p>
                     </div>
                     <p className="card-text">{data.body}</p>
                     {data.tags.map((tag) => {

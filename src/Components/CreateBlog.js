@@ -9,15 +9,26 @@ export default function CreateBlog() {
 
     const {addBlog} = useContext(BlogStore);
 
-    const handleOnSubmit=()=>{
-
+    const handleOnSubmit=(e)=>{
+        e.preventDefault();
         console.log('Submit Clicked')
    const title = titleElm.current.value;
    const author = authorElm.current.value;
    const body = bodyElm.current.value;
    const tags = tagsElm.current.value.split(' ');
 
-   addBlog(title,author,body,tags);
+  fetch('https://dummyjson.com/posts/add', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    title,
+    body ,
+    tags,
+    userId:69,
+  })
+})
+.then(res => res.json())
+.then(res =>  { addBlog(res)});
     }
   return (
     <div className="d-flex justify-content-center">

@@ -1,36 +1,38 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer,useEffect,useState } from "react";
 
 export const BlogStore = createContext({
     blogList : [],
     addBlog : ()=>{},
-    removeBlog : ()=>{}
+    removeBlog : ()=>{},
+    fetching : false,
 })
 
 const reducer = (currBlogList,action)=>{
     let newBlogList = currBlogList;
 
     if(action.type==='ADD_BLOG'){
-       newBlogList = [...currBlogList,action.payload];
+       newBlogList = [action.payload,...currBlogList];
     }
     else if(action.type==='DELETE_POST'){
        newBlogList = currBlogList.filter((blog)=> {return blog.title!==action.payload.title})
+    }
+    else if(action.type==='ADD_INITIAL_BLOG'){
+       newBlogList = action.payload
     }
    return newBlogList;
 }
 export const BlogStoreProvider =({children})=>{
 
     const [blogList,dispatchBlogList]  = useReducer(reducer,[]);
+   
+    const addInitialBlog=(blogs)=>{
+        dispatchBlogList({ type: 'ADD_INITIAL_BLOG', payload: blogs })
+    }
 
-    const addBlog=(title,author,body,tags)=>{
+    const addBlog=(blog)=>{
         dispatchBlogList({
             type:'ADD_BLOG',
-            payload:{
-                title:title,
-                author:author,
-                date:new Date().toLocaleDateString(),
-                body:body,
-                tags:tags
-            }
+            payload:blog,
         })
     }
     
@@ -42,12 +44,24 @@ export const BlogStoreProvider =({children})=>{
         }
        })
     } 
+    const [fetching,setFetching] = useState(false);
+    useEffect(() =>{
+        setFetching(true);
+        fetch('https://dummyjson.com/posts')
+        .then(res => res.json())
+        .then((res) => {
+        const blogs = res.posts;
+        addInitialBlog(blogs);
+        setFetching(false);
+          });          
+          },[])
 
     return (
        <BlogStore.Provider value={{
          blogList,
          addBlog,
          removeBlog,
+         fetching,
        }}>
           {children}
        </BlogStore.Provider>

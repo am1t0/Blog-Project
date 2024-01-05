@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useState ,useEffect, useContext} from "react";
 import Navbar from "./Components/Navbar";
 import Blogs from "./Components/Blogs";
 import CreateBlog from "./Components/CreateBlog";
-import { BlogStoreProvider } from "./Store/Data";
+import { BlogStoreProvider,BlogStore } from "./Store/Data";
 
 function App() {
-
-
+    
   const [selectedTab,setSelectedTab] = useState('Home');
 
   return(
