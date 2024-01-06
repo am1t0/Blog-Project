@@ -1,56 +1,50 @@
-import React, { useContext, useRef } from 'react'
-import { BlogStore } from '../Store/Data';
+import { useContext } from "react";
+import { Form, redirect } from "react-router-dom";
+import { BlogStore } from "../Store/Data";
 
 export default function CreateBlog() {
-    const titleElm = useRef();
-    const authorElm = useRef();
-    const bodyElm = useRef();
-    const tagsElm = useRef();
 
-    const {addBlog} = useContext(BlogStore);
+  const {darkMode} = useContext(BlogStore)
 
-    const handleOnSubmit=(e)=>{
-        e.preventDefault();
-        console.log('Submit Clicked')
-   const title = titleElm.current.value;
-   const author = authorElm.current.value;
-   const body = bodyElm.current.value;
-   const tags = tagsElm.current.value.split(' ');
-
-  fetch('https://dummyjson.com/posts/add', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    title,
-    body ,
-    tags,
-    userId:69,
-  })
-})
-.then(res => res.json())
-.then(res =>  { addBlog(res)});
-    }
   return (
-    <div className="d-flex justify-content-center">
-    <form style={{width:'48%'}} className='my-4'onSubmit={handleOnSubmit}>
+    <div className="d-flex justify-content-center" style={{background:''}}>
+    <Form method='POST' style={{width:'48%' ,background:`${darkMode?'grey':'skyBlue'}`}} className='my-4 p-4'>
     <div className="form-group my-4">
       <label htmlFor="title">Title</label>
-      <input type="text" className="form-control" id="title" placeholder="Enter title" ref={titleElm}/>
+      <input type="text" className="form-control" id="title" placeholder="Enter title" name='title'/>
     </div>
     <div className="form-group my-4">
       <label htmlFor="Author">Author</label>
-      <input type="text" className="form-control" id="Author" placeholder="Enter author name" ref={authorElm}/>
+      <input type="text" className="form-control" id="Author" placeholder="Enter author name" name='author'/>
     </div>
     <div className="form-group my-4">
       <label htmlFor="Body">Body</label>
-      <textarea type="text" rows={10} className="form-control" id="Body" placeholder="Enter body" ref={bodyElm}/>
+      <textarea type="text" rows={10} className="form-control" id="Body" placeholder="Enter body"name="body"/>
     </div>
     <div className="form-group">
       <label htmlFor="tags">Tags</label>
-      <textarea type="tags" rows={4} className="form-control" id="tags" placeholder="Enter tags" ref={tagsElm}/>
+      <textarea type="tags" rows={4} className="form-control" id="tags" placeholder="Enter tags" name="tags"/>
     </div>
     <button type="submit" className="btn btn-primary my-3">Submit</button>
-  </form>
+  </Form>
   </div>
   )
+}
+
+export const createBlogAction = async (data)=>{
+ 
+  const formData = await data.request.formData();
+  const postData = Object.fromEntries(formData);
+  postData.tags = postData.tags.split(' ');
+  console.log(postData);
+
+  fetch('https://dummyjson.com/posts/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(res => console.log(res));
+
+  return redirect('/');
 }

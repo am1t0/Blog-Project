@@ -4,7 +4,7 @@ import { BlogStore } from '../Store/Data';
 
 export default function Blog({ data }) {
  
-    const {removeBlog} = useContext(BlogStore); 
+    const {removeBlog,darkMode} = useContext(BlogStore); 
 
     const handleOnDelete=()=>{
          console.log('Deleting the Blog....')
@@ -12,9 +12,9 @@ export default function Blog({ data }) {
     }
     return (
         <>
-            <div className="card my-3" style={{ width: '70%' }}>
-                <div className="card-body">
-                    <h5 className="card-title">{data.title}</h5>
+            <div className="card my-3" style={{ width: '70%' }} id={darkMode?'blogDark':'blogLight'}>
+                <div className={`card-body ${darkMode?'darkFont':'lightFont'}`}>
+                    <h5 className="card-title" >{data.title}</h5>
                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" onClick={handleOnDelete}>
                         <i className="fa-solid fa-trash"></i>
                     </span>

@@ -3,16 +3,15 @@ import Navbar from "./Components/Navbar";
 import Blogs from "./Components/Blogs";
 import CreateBlog from "./Components/CreateBlog";
 import { BlogStoreProvider,BlogStore } from "./Store/Data";
+import { Outlet } from "react-router-dom";
 
 function App() {
     
-  const [selectedTab,setSelectedTab] = useState('Home');
 
   return(
     <BlogStoreProvider>
-    <Navbar tab ={selectedTab} setTab ={setSelectedTab} />
-
-    {(selectedTab==='Home')?<Blogs/> : <CreateBlog/>}
+    <Navbar/>
+    <Outlet/>
     </BlogStoreProvider>
   )
 }

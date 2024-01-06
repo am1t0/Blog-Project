@@ -1,23 +1,30 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { BlogStore } from '../Store/Data'
+import { useContext } from 'react';
 import Blog from './Blog';
-import LoadingSpinner from './LoadingSpinner';
+import { useLoaderData } from 'react-router-dom';
+import { BlogStore } from '../Store/Data';
 
 export default function Blogs() {
 
-  const {blogList,fetching} = useContext(BlogStore);
-
-
-
+  const blogList = useLoaderData();
+  const {darkMode} = useContext(BlogStore)
 
   return (
     <>
-    {fetching && <LoadingSpinner/>}
-    <div className='d-flex flex-column align-items-center my-4'>
-      {!fetching && blogList.length!==0 && blogList.map((blog)=>{
+    <div className='d-flex flex-column align-items-center my-4' id='blogListLight'>
+      {blogList.length!==0 && blogList.map((blog)=>{
         return <Blog data = {blog}  key={blog.title}/>
       })}
     </div>
     </>
   )
+}
+
+export const loadingBlogs=()=>{
+    return fetch('https://dummyjson.com/posts')
+    .then(res => res.json())
+    .then((res) => {
+      console.log('Fetched data is : ',res.posts)
+      return res.posts;
+      });          
+
 }

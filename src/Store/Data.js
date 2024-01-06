@@ -1,10 +1,12 @@
-import { createContext, useReducer,useEffect,useState } from "react";
+import { createContext, useReducer,useState } from "react";
 
 export const BlogStore = createContext({
     blogList : [],
     addBlog : ()=>{},
     removeBlog : ()=>{},
     fetching : false,
+    darkMode: false,
+    changeMode: ()=>{},
 })
 
 const reducer = (currBlogList,action)=>{
@@ -24,7 +26,15 @@ const reducer = (currBlogList,action)=>{
 export const BlogStoreProvider =({children})=>{
 
     const [blogList,dispatchBlogList]  = useReducer(reducer,[]);
-   
+    const [fetching,setFetching] = useState(false);
+   const [darkMode,setDarkMode] = useState(false);
+
+    const changeMode =()=>{
+       //console.log('Dark Mode ', darkMode)
+            setDarkMode(!darkMode);
+        console.log('Dark Mode ', darkMode)
+    }
+
     const addInitialBlog=(blogs)=>{
         dispatchBlogList({ type: 'ADD_INITIAL_BLOG', payload: blogs })
     }
@@ -44,17 +54,6 @@ export const BlogStoreProvider =({children})=>{
         }
        })
     } 
-    const [fetching,setFetching] = useState(false);
-    useEffect(() =>{
-        setFetching(true);
-        fetch('https://dummyjson.com/posts')
-        .then(res => res.json())
-        .then((res) => {
-        const blogs = res.posts;
-        addInitialBlog(blogs);
-        setFetching(false);
-          });          
-          },[])
 
     return (
        <BlogStore.Provider value={{
@@ -62,6 +61,8 @@ export const BlogStoreProvider =({children})=>{
          addBlog,
          removeBlog,
          fetching,
+         darkMode,
+         changeMode
        }}>
           {children}
        </BlogStore.Provider>
